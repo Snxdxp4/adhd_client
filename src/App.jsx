@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router";
 import Home from "./Screens/Home";
-import ADHDAssessment from "./Components/assement";
+import ADHDAssessment from "./Components/Assement";
 
 function App() {
   return (
