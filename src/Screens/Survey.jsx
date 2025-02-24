@@ -1,4 +1,4 @@
-import ADHDAssessment from "../Components/assement";
+import ADHDAssessment from "../Components/Assement";
 
 export default function Survey() {
   return (

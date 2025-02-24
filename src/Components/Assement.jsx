@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Api from "../api/axios";
+import { useNavigate } from "react-router";
 
 const ADHDAssessment = () => {
   const questions = [
@@ -28,7 +29,7 @@ const ADHDAssessment = () => {
   const [totalScore, setTotalScore] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [result, setResult] = useState(null);
-
+  const [alert, setAlert] = useState(null);
   const handleAnswerChange = (questionText, value) => {
     setAnswers((prev) => {
       const updated = {
@@ -52,14 +53,29 @@ const ADHDAssessment = () => {
       setCurrentIndex((prev) => prev - 1);
     }
   };
-
+  const navigate = useNavigate();
   const handleSubmit = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setAlert("Please login before submit the assessment");
+      setTimeout(() => {
+        navigate("/auth");
+      }, 3000);
+    }
     if (Object.keys(answers).length === questions.length) {
       setSubmitted(true);
       localStorage.setItem("AdhdScore", totalScore);
-      const resp = await Api.post("/predict", answers);
-      setResult(resp.data);
-      console.log("API Response:", resp);
+      try {
+        const resp = await Api.post("/predict", answers, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setResult(resp.data);
+        console.log("API Response:", resp);
+      } catch (error) {
+        console.error("Error submitting the assessment:", error);
+      }
     } else {
       alert("Please answer all questions before submitting.");
     }
@@ -164,11 +180,18 @@ const ADHDAssessment = () => {
               </span>
             ) : null}
           </p>
-          {totalScore && (
-            <span className="opacity-80 transition-opacity  duration-300 ease-in font-bold mt-2">
-              Your Total Score : {totalScore}
-            </span>
-          )}
+          <div className="flex flex-col items-center justify-center gap-4">
+            {totalScore && (
+              <span className="opacity-80 transition-opacity  duration-300 ease-in font-bold mt-2">
+                Your Total Score : {totalScore}
+              </span>
+            )}
+            {alert && (
+              <span className="opacity-80 transition-opacity ease-in duration-300 font-bold mt-2">
+                {alert}
+              </span>
+            )}
+          </div>
         </div>
       )}
     </div>
