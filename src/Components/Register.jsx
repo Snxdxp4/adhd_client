@@ -10,7 +10,7 @@ function Register() {
   });
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [registed,setregisted] = usestate(false);
+  const [registed,setregisted] = useState(false);
   
   const register = async () => {
     setIsLoading(true);
