@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Api from "../api/axios";
-import { Link, redirect } from "react-router";
+import { useNavigate } from "react-router";
+import { Link } from "react-router";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ function Register() {
   });
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   
   const register = async () => {
     setIsLoading(true);
@@ -17,7 +19,7 @@ function Register() {
       const response = await Api.post("/register", formData);
       if (response.status === 200) {
         console.log(response.data);
-        redirect("/auth/login")
+        navigate("/auth/login")
       }
     } catch (error) {
       setError(error.response?.data?.message || "An error occurred. Please try again later.");
