@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Api from "../api/axios";
-import { Link } from "react-router";
+import { Link, redirect } from "react-router";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -17,6 +17,7 @@ function Register() {
       const response = await Api.post("/register", formData);
       if (response.status === 200) {
         console.log(response.data);
+        redirect("/auth/login")
       }
     } catch (error) {
       setError(error.response?.data?.message || "An error occurred. Please try again later.");
